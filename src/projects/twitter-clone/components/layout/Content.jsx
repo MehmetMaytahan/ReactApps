@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ToptweetsIcon } from "../icons/Icons";
 import TweetBox from "./TweetBox";
-//import db from "../../../../firebase"
+import db from "../../../../firebase";
+import { onSnapshot, collection } from "firebase/firestore";
+import TweetList from "./TweetList";
 
 const Content = () => {
+  const [tweets, setTweets] = useState([{ content: "Tweetler Yükleniyor" }]);
+  useEffect(() => {
+    onSnapshot(collection(db, "feed"), (snapshot) => {
+      setTweets(snapshot.docs.map((doc) => doc.data()));
+    });
+  }, []);
+
   return (
     <main className="flex-1 flex flex-col border-r border-l border-l-gray-extraLigth">
       <header className="sticky top-0  flex justify-between items-center p-4 border-b border-gray-extraLigth bg-white ">
@@ -20,6 +29,9 @@ const Content = () => {
       </div>
       {/* Divider */}
       <div className="h-3 bg-gray-lightest border-t border-b border-gray-extraLigth" />
+
+      {/* Tweets */}
+      <TweetList tweets={tweets} />
     </main>
   );
 };

@@ -8,7 +8,7 @@ import {
 } from "../icons/Icons";
 
 import db from "../../../../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const TweetBox = () => {
   const [content, setContent] = useState("");
@@ -16,20 +16,17 @@ const TweetBox = () => {
   const sendTweet = () => {
     if (!content) return false;
 
-    setDoc(doc(db, "feed"), {
+    addDoc(collection(db, "feed"), {
       displayName: "Mehmet Maytahan",
       username: "@MehmetMaytahan",
       content,
+      timestamp: serverTimestamp(),
+      avatar:
+        "https://pbs.twimg.com/profile_images/1487818342668845063/DBAgAAg8_400x400.jpg",
     });
-
-    // db.collection("feed").add({
-    //   displayName: "Mehmet Maytahan",
-    //   username: "@MehmetMaytahan",
-    //   content,
-    //   avatar:
-    //     "https://pbs.twimg.com/profile_images/1487818342668845063/DBAgAAg8_400x400.jpg",
-    // });
+    setContent("");
   };
+
   return (
     <div className="flex flex-col flex-1 mt-2 px-2">
       <textarea
